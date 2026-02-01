@@ -68,18 +68,42 @@ class parsing_engine:
 
     def var_collect(self):
 
-        var_set = parsing_engine.static_init_parser(self, "var")
-        return var_set
+        var_ls = parsing_engine.static_init_parser(self, "var")
+        return var_ls
         
     def varexo_collect(self):
 
-        varexo_set = parsing_engine.static_init_parser(self, "varexo")
-        return varexo_set
+        varexo_ls = parsing_engine.static_init_parser(self, "varexo")
+        return varexo_ls
 
     def parameter_collect(self):
 
-        parameter_set = parsing_engine.static_init_parser(self, "parameters")
-        return parameter_set
+        self.parameter_ls = parsing_engine.static_init_parser(self, "parameters")
+        return self.parameter_ls
+
+    def parameter_define(self):
+
+        with open(self.tf) as tf:
+            line_list = tf.readlines()
+
+        param_define_dict = {}
+
+        for line in line_list:
+            str_line = str(line)
+            for parameter in self.parameter_ls:
+                if parameter in str_line and ";" in str_line and "parameters" not in str_line:
+                    no_param_line = str_line.replace(parameter, "")
+                    no_param_eq_line = no_param_line.replace("=", "")
+                    no_sc_line = no_param_eq_line.replace(";", "")
+                    no_comment_line = no_sc_line.split("/")[0]
+                    value = no_comment_line.strip()
+                    param_define_dict[parameter] = value
+            
+            if len(param_define_dict) == 3:
+                break
+                
+        return param_define_dict
+            
 
 
 is_a_test = True
@@ -91,7 +115,8 @@ if is_a_test == True:
     print(set_two)
     set_three = temp_instance.parameter_collect()
     print(set_three)
-
+    set_four = temp_instance.parameter_define()
+    print(set_four)
 
 
 
