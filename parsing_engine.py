@@ -1,8 +1,5 @@
 #This file is responsible for parsing the provided text file and organizing the system accordingly for prediction and simulations
 
-#Remove the self. for all of the iterables that I justa added and have the methods feed the other method I need through the final method argument itself
-
-
 import sys 
 import sympy as sp
 
@@ -15,14 +12,11 @@ class parsing_engine:
         with open(self.tf) as tf:
             self.line_list = tf.readlines()
 
-    def sympy_initializer(self, iterable):
-        for var in iterable:
-            sp.Symbol(var)
 
     #START HERE TOMORROW - BEGIN BY FIXING THE PROBLEMS RESULTING FROM SWAPPING OF SET FOR LIST IN CHAR GATHERING
     def static_init_parser(self, required_command: str):
 
-        self.static_init_ls = []
+        static_init_ls = []
         command_line = None
             
         for line in self.line_list:
@@ -48,12 +42,12 @@ class parsing_engine:
                 continue
 
             elif char.strip() != "" and prev_char.strip() == "":
-                self.static_init_ls.append(char)
+                static_init_ls.append(char)
                 
             elif char.strip() != "" and prev_char.strip() != "":
-                 self.static_init_ls.remove(prev_char)
+                 static_init_ls.remove(prev_char)
                  combined_var = prev_char + char
-                 self.static_init_ls.append(combined_var)
+                 static_init_ls.append(combined_var)
                  prev_char = combined_var
                  continue
                     
@@ -64,13 +58,13 @@ class parsing_engine:
             if ";" in variable:
                 no_sl = variable.replace(";", "")
                 final_no_sl = no_sl.strip()
-                self.static_init_ls.remove(variable)
-                self.static_init_ls.append(final_no_sl)
+                static_init_ls.remove(variable)
+                static_init_ls.append(final_no_sl)
         
-        if "" in self.static_init_ls:
-            self.static_init_ls.remove("")
+        if "" in static_init_ls:
+            static_init_ls.remove("")
 
-        return self.static_init_ls
+        return static_init_ls
 
     def var_collect(self):
 
@@ -89,7 +83,7 @@ class parsing_engine:
 
     def parameter_define(self):
 
-        self.param_define_dict = {}
+        param_define_dict = {}
 
         for line in self.line_list:
             str_line = str(line)
@@ -100,20 +94,28 @@ class parsing_engine:
                     no_sc_line = no_param_eq_line.replace(";", "")
                     no_comment_line = no_sc_line.split("/")[0]
                     value = no_comment_line.strip()
-                    self.param_define_dict[parameter] = float(value)
+                    param_define_dict[parameter] = float(value)
             
-            if len(self.param_define_dict) == 3:
+            if len(param_define_dict) == 3:
                 break
                 
-        return self.param_define_dict
+        return param_define_dict
             
 
-    def model_collect(self):
-        
-        eq_dict = {}
+    def model_collect(self, iterables):
         
 
-        for iterable_item in []
+        complete_var_list = []
+        for iter_item in iterables:
+            for var in iter_item:
+                complete_var_list.append(var)
+
+        complete_var_dict = {}
+        for var in complete_var_list:
+            complete_var_dict[var] = sp.Symbol(var)
+
+
+        eq_dict = {}
         
 
         for line in self.line_list:
@@ -125,15 +127,21 @@ class parsing_engine:
 
         model_list = self.line_list[min_index+1:max_index]
 
-        for counter, line in enumerate(model_list):
+        counter = 1
+        for line in model_list:
             str_line = str(line)
             if ";" in str_line:
                 lhs_carrot = str_line.split("=")[0].strip()
                 lhs = lhs_carrot.replace("^", "**")
+                lhs.replace(" ", "")
                 rhs_sc_carrot = str_line.split("=")[1].strip()
                 rhs_carrot = rhs_sc_carrot.replace(";", "")
                 rhs = rhs_carrot.replace("^", "**")
-                eq_dict[f"Equation {counter}"] = sp.Eq(lhs, rhs)
+                rhs.replace(" ", "")
+                print(lhs)
+                print(rhs)
+                eq_dict[f"Equation {counter}"] = sp.Eq(sp.parse_expr(lhs, global_dict={'Symbol': sp.Symbol}, local_dict={}), sp.parse_expr(rhs, global_dict={'Symbol': sp.Symbol}, local_dict={}))
+                counter += 1
 
         return eq_dict
 
@@ -150,7 +158,7 @@ if is_a_test == True:
     print(set_three)
     set_four = temp_instance.parameter_define()
     print(set_four)
-    set_five = temp_instance.model_collect()
+    set_five = temp_instance.model_collect([set_one, set_two, set_three, set_four])
     print(set_five)
 
 

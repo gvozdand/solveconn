@@ -28,29 +28,11 @@ gamma   = 2;        // Risk aversion
 // =========================================================================
 
 model;
-    // (1) Household FOC for consumption-labor choice
-    psi * l^(1/gamma) = w * c^(-gamma);
     
-    // (2) Euler equation (intertemporal consumption)
-    c^(-gamma) = beta * c(+1)^(-gamma) * (1 + r(+1) - delta);
+alpha*beta = x;
+
+yk + x = gamma + beta + alpha;
     
-    // (3) Production function (Cobb-Douglas)
-    y = a * k(-1)^alpha * l^(1-alpha);
-    
-    // (4) Capital accumulation
-    k = (1 - delta) * k(-1) + i;
-    
-    // (5) Resource constraint
-    y = c + i;
-    
-    // (6) Firm FOC for capital
-    r = alpha * y / k(-1);
-    
-    // (7) Firm FOC for labor
-    w = (1 - alpha) * y / l;
-    
-    // (8) TFP process (AR(1) in logs)
-    log(a) = rho * log(a(-1)) + e;
 end;
 
 // =========================================================================
