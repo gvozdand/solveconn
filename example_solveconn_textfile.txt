@@ -20,11 +20,8 @@ parameters beta alpha gamma;
 
 alpha   = 0.33;     // Capital share (standard value)
 beta    = 0.99;     // Discount factor (implies ~4% annual rate)
-delta   = 0.025;    // Depreciation rate (10% annual)
-rho     = 0.95;     // Persistence of TFP shock
-sigma_e = 0.01;     // Standard deviation of TFP innovation
 gamma   = 2;        // Risk aversion
-psi     = 1.75;     // Labor disutility weight
+
 
 // =========================================================================
 // 3. Model Equations

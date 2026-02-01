@@ -1,6 +1,10 @@
 #This file is responsible for parsing the provided text file and organizing the system accordingly for prediction and simulations
 
+#Remove the self. for all of the iterables that I justa added and have the methods feed the other method I need through the final method argument itself
+
+
 import sys 
+import sympy as sp
 
 class parsing_engine:
 
@@ -8,18 +12,20 @@ class parsing_engine:
 
         self.tf = text_file
         print("Parsing the file you provided.")
-    
+        with open(self.tf) as tf:
+            self.line_list = tf.readlines()
+
+    def sympy_initializer(self, iterable):
+        for var in iterable:
+            sp.Symbol(var)
 
     #START HERE TOMORROW - BEGIN BY FIXING THE PROBLEMS RESULTING FROM SWAPPING OF SET FOR LIST IN CHAR GATHERING
     def static_init_parser(self, required_command: str):
 
-        static_init_ls = []
+        self.static_init_ls = []
         command_line = None
-    
-        with open(self.tf) as tf:
-            line_list = tf.readlines()
             
-        for line in line_list:
+        for line in self.line_list:
             
             str_line = str(line)
             if required_command in str_line and ";" in str_line:
@@ -42,12 +48,12 @@ class parsing_engine:
                 continue
 
             elif char.strip() != "" and prev_char.strip() == "":
-                static_init_ls.append(char)
+                self.static_init_ls.append(char)
                 
             elif char.strip() != "" and prev_char.strip() != "":
-                 static_init_ls.remove(prev_char)
+                 self.static_init_ls.remove(prev_char)
                  combined_var = prev_char + char
-                 static_init_ls.append(combined_var)
+                 self.static_init_ls.append(combined_var)
                  prev_char = combined_var
                  continue
                     
@@ -58,13 +64,13 @@ class parsing_engine:
             if ";" in variable:
                 no_sl = variable.replace(";", "")
                 final_no_sl = no_sl.strip()
-                static_init_ls.remove(variable)
-                static_init_ls.append(final_no_sl)
+                self.static_init_ls.remove(variable)
+                self.static_init_ls.append(final_no_sl)
         
-        if "" in static_init_ls:
-            static_init_ls.remove("")
+        if "" in self.static_init_ls:
+            self.static_init_ls.remove("")
 
-        return static_init_ls
+        return self.static_init_ls
 
     def var_collect(self):
 
@@ -83,12 +89,9 @@ class parsing_engine:
 
     def parameter_define(self):
 
-        with open(self.tf) as tf:
-            line_list = tf.readlines()
+        self.param_define_dict = {}
 
-        param_define_dict = {}
-
-        for line in line_list:
+        for line in self.line_list:
             str_line = str(line)
             for parameter in self.parameter_ls:
                 if parameter in str_line and ";" in str_line and "parameters" not in str_line:
@@ -97,14 +100,44 @@ class parsing_engine:
                     no_sc_line = no_param_eq_line.replace(";", "")
                     no_comment_line = no_sc_line.split("/")[0]
                     value = no_comment_line.strip()
-                    param_define_dict[parameter] = value
+                    self.param_define_dict[parameter] = float(value)
             
-            if len(param_define_dict) == 3:
+            if len(self.param_define_dict) == 3:
                 break
                 
-        return param_define_dict
+        return self.param_define_dict
             
 
+    def model_collect(self):
+        
+        eq_dict = {}
+        
+
+        for iterable_item in []
+        
+
+        for line in self.line_list:
+            str_line = str(line)
+            if "model;" in str_line:
+                min_index = self.line_list.index(line)
+            if "end;" in str_line and min_index != None:
+                max_index = self.line_list.index(line)
+
+        model_list = self.line_list[min_index+1:max_index]
+
+        for counter, line in enumerate(model_list):
+            str_line = str(line)
+            if ";" in str_line:
+                lhs_carrot = str_line.split("=")[0].strip()
+                lhs = lhs_carrot.replace("^", "**")
+                rhs_sc_carrot = str_line.split("=")[1].strip()
+                rhs_carrot = rhs_sc_carrot.replace(";", "")
+                rhs = rhs_carrot.replace("^", "**")
+                eq_dict[f"Equation {counter}"] = sp.Eq(lhs, rhs)
+
+        return eq_dict
+
+        
 
 is_a_test = True
 if is_a_test == True:
@@ -117,7 +150,8 @@ if is_a_test == True:
     print(set_three)
     set_four = temp_instance.parameter_define()
     print(set_four)
-
+    set_five = temp_instance.model_collect()
+    print(set_five)
 
 
 
