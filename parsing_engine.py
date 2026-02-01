@@ -13,7 +13,7 @@ class parsing_engine:
     #START HERE TOMORROW - BEGIN BY FIXING THE PROBLEMS RESULTING FROM SWAPPING OF SET FOR LIST IN CHAR GATHERING
     def static_init_parser(self, required_command: str):
 
-        static_init_set = []
+        static_init_ls = []
         command_line = None
     
         with open(self.tf) as tf:
@@ -35,32 +35,36 @@ class parsing_engine:
 
         for indx, char in enumerate(command_line):
             print(char)
+            print(prev_char)
             
 
             if indx+1 <= len(required_command):
                 continue
 
             elif char.strip() != "" and prev_char.strip() == "":
-                static_init_set.append(char)
+                static_init_ls.append(char)
                 
             elif char.strip() != "" and prev_char.strip() != "":
-                 static_init_set.remove(prev_char)
+                 static_init_ls.remove(prev_char)
                  combined_var = prev_char + char
-                 static_init_set.append(combined_var)
-            
+                 static_init_ls.append(combined_var)
+                 prev_char = combined_var
+                 continue
+                    
+
             prev_char = char 
 
-        for variable in static_init_set:
+        for variable in static_init_ls:
             if ";" in variable:
                 no_sl = variable.replace(";", "")
                 final_no_sl = no_sl.strip()
-                static_init_set.remove(variable)
-                static_init_set.append(final_no_sl)
+                static_init_ls.remove(variable)
+                static_init_ls.append(final_no_sl)
         
-        if "" in static_init_set:
-            static_init_set.remove("")
+        if "" in static_init_ls:
+            static_init_ls.remove("")
 
-        return static_init_set
+        return static_init_ls
 
     def var_collect(self):
 
