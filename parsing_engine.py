@@ -34,8 +34,7 @@ class parsing_engine:
         prev_char = ""
 
         for indx, char in enumerate(command_line):
-            print(char)
-            print(prev_char)
+            
             
 
             if indx+1 <= len(required_command):
@@ -103,7 +102,7 @@ class parsing_engine:
             
 
     def model_collect(self, iterables):
-        
+        #In its current state, this requires strictly past time notation - (+1) notation will throw and error for now
 
         complete_var_list = []
         for iter_item in iterables:
@@ -134,10 +133,12 @@ class parsing_engine:
                 lhs_carrot = str_line.split("=")[0].strip()
                 lhs = lhs_carrot.replace("^", "**")
                 lhs.replace(" ", "")
+                lhs.replace("(-1)", "t_minus_one")
                 rhs_sc_carrot = str_line.split("=")[1].strip()
                 rhs_carrot = rhs_sc_carrot.replace(";", "")
                 rhs = rhs_carrot.replace("^", "**")
                 rhs.replace(" ", "")
+                rhs.replace("(-1)", "t_minus_one")
                 print(lhs)
                 print(rhs)
                 eq_dict[f"Equation {counter}"] = sp.Eq(sp.parse_expr(lhs, global_dict={'Symbol': sp.Symbol}, local_dict={}), sp.parse_expr(rhs, global_dict={'Symbol': sp.Symbol}, local_dict={}))
